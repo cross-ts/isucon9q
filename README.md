@@ -1,2 +1,2 @@
-# isucon
-ISUCON9用開発リポジトリ
+# isucon9-qualify
+ISUCON9予選用開発リポジトリ
