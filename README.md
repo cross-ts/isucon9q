@@ -44,3 +44,6 @@ dbサーバー用のredisのconfig置き場
 
 #### service
 /etc/systemd/system以下に配置するserviceのコード
+
+### public
+全サーバーに配置する静的ファイル置き場
