@@ -1,0 +1,8 @@
+[Unit]
+Description = h2o for application server.
+
+[Service]
+ExecStart = /usr/local/bin/h2o -c /isucon9q/app_server/h2o/h2o.conf
+
+[Install]
+WantedBy = multi-user.target
