@@ -1,1 +1,70 @@
 #!/usr/bin/env bash
+
+TARGET=$1
+if [[ $TARGET = '' ]]; then
+  echo 'bin/deploy <app or db>'
+  exit 1
+fi
+
+timestamp=$(date +%s)
+
+echo ===============================================
+echo BackUp
+if [[ -e /etc/systemd/system/h2o.service ]]; then
+  cp /etc/systemd/system/h2o.service tmp/h2o.service.${timestamp}
+  echo h2o
+fi
+
+if [[ -e /etc/systemd/system/redis.service ]]; then
+  cp /etc/systemd/system/redis.service tmp/redis.service.${timestamp}
+  echo redis
+fi
+
+if [[ -e /etc/systemd/system/db.service ]]; then
+  cp /etc/systemd/system/db.service tmp/db.service.${timestamp}
+  echo db
+fi
+
+if [[ -e /etc/systemd/system/ruby.service ]]; then
+  cp /etc/systemd/system/ruby.service tmp/ruby.service.${timestamp}
+  echo ruby
+fi
+echo DONE
+echo ===============================================
+
+cp ${TARGET}_server/service/*.service /etc/systemd/system/
+systemctl daemon-reload
+
+echo ===============================================
+echo h2o :
+systemctl list-unit-files --type=service | grep h2o
+echo ===============================================
+echo redis :
+systemctl list-unit-files --type=service | grep redis
+echo ===============================================
+echo db :
+systemctl list-unit-files --type=service | grep db
+echo ===============================================
+echo ruby :
+systemctl list-unit-files --type=service | grep ruby
+echo ===============================================
+
+if [[ -e /etc/systemd/system/h2o.service ]]; then
+  systemctl enable h2o.service
+  systemctl restart h2o.service
+fi
+
+if [[ -e /etc/systemd/system/redis.service ]]; then
+  systemctl enable redis.service
+  systemctl restart redis.service
+fi
+
+if [[ -e /etc/systemd/system/db.service ]]; then
+  systemctl enable db.service
+  systemctl restart db.service
+fi
+
+if [[ -e /etc/systemd/system/ruby.service ]]; then
+  systemctl enable ruby.service
+  systemctl restart ruby.service
+fi
