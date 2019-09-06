@@ -4,7 +4,6 @@ ISUCON9予選用開発リポジトリ
 ## リポジトリ構成
 ```
 /isucon9q
-.
 ├── Dockerfile
 ├── README.md
 ├── app_server
