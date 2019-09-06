@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+TARGET=$1
+if [[ $TARGET = '' ]]; then
+  echo 'bin/install <app or db>'
+  exit 1
+fi
+
+echo 'Update apt'
+apt update
+apt install -y curl git build-essential libssl-dev libreadline-dev zlib1g-dev bison cmake unzip
+
+echo 'Install ruby2.6.4 with rbenv'
+cd /tmp
+export PATH=/root/.rbenv/bin:/root/.rbenv/shims:$PATH
+curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
+rbenv install 2.6.4
+echo "export PATH=${HOME}/.rbenv/bin:${HOME}/.rbenv/versions/2.6.4/bin:\$PATH" >> ~/.bashrc
+rm ruby-build.*.log
+echo 'DONE'
+
+echo 'Install h2o'
+source ~/.bashrc
+cd /tmp
+TAR_BALL=v2.2.6.tar.gz
+curl -sSL -O https://github.com/h2o/h2o/archive/${TAR_BALL}
+tar xzf ${TAR_BALL}
+rm ${TAR_BALL}
+cd h2o-2.2.6
+cmake . -DWITH_MRUBY=on
+make
+make install
+cd ..
+rm -fr h2o-2.2.6
+echo 'DONE'
+
+echo 'Install alp'
+cd /tmp
+curl -sSL -O https://github.com/tkuchiki/alp/releases/download/v1.0.1/alp_linux_amd64.zip
+unzip alp_linux_amd64.zip
+rm alp_linux_amd64.zip
+install ./alp /usr/local/bin/
+echo 'DONE'
+
+echo 'Install redis'
+TAR_BALL=redis-stable.tar.gz
+cd /tmp
+curl -sSL -O http://download.redis.io/${TAR_BALL}
+tar xzf ${TAR_BALL}
+rm ${TAR_BALL}
+cd redis-stable
+make
+make install
+cd ..
+rm -fr redis-stable
+echo 'DONE'
+
+# appの場合はmysql8.0のインストールをしない
+if [[ $TARGET = 'app' ]]; then
+  exit 0
+fi
+
+echo 'Install mysql8.0'
+cd /tmp
+curl -sSL -O https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+dpkg -i mysql-apt-config*
+rm mysql-apt-config*
+apt update
+apt install -y mysql-server
+echo 'DONE'
+
+echo 'Install pt-query-digest'
+curl -sSL -O https://www.percona.com/downloads/percona-toolkit/3.0.13/binary/debian/bionic/x86_64/percona-toolkit_3.0.13-1.bionic_amd64.deb
+apt install -y libdbd-mysql-perl libdbi-perl libio-socket-ssl-perl libnet-ssleay-perl libterm-readkey-perl
+dpkg -i percona-toolkit_3.0.13-1.bionic_amd64.deb
+rm percona-toolkit_3.0.13-1.bionic_amd64.deb
+echo 'DONE'

@@ -1,0 +1,8 @@
+[Unit]
+Description = Redis for database server.
+
+[Service]
+ExecStart = /usr/local/bin/redis /isucon9q/db_server/redis/redis.conf
+
+[Install]
+WantedBy = multi-user.target
