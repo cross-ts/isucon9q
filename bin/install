@@ -65,3 +65,9 @@ rm mysql-apt-config*
 apt update
 apt install -y mysql-server
 echo 'DONE'
+
+echo 'Install pt-query-digest'
+curl -sSL -O https://www.percona.com/downloads/percona-toolkit/3.0.13/binary/debian/bionic/x86_64/percona-toolkit_3.0.13-1.bionic_amd64.deb
+apt install libdbd-mysql-perl libdbi-perl libio-socket-ssl-perl libnet-ssleay-perl libterm-readkey-perl
+dpkg -i percona-toolkit_3.0.13-1.bionic_amd64.deb
+echo 'DONE'
