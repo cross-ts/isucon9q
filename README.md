@@ -4,17 +4,25 @@ ISUCON9予選用開発リポジトリ
 ## リポジトリ構成
 ```
 /isucon9q
+.
+├── Dockerfile
 ├── README.md
 ├── app_server
 │   ├── app
 │   ├── h2o
 │   ├── redis
 │   └── service
+├── bin
+│   ├── deploy
+│   └── install
 ├── db_server
+│   ├── app
 │   ├── db
 │   ├── h2o
 │   ├── redis
 │   └── service
+├── logs
+│   └── h2o
 └── static
 ```
 
