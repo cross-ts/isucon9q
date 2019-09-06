@@ -8,7 +8,7 @@ fi
 
 echo 'Update apt'
 apt update
-apt install -y curl git build-essential libssl-dev libreadline-dev zlib1g-dev bison cmake
+apt install -y curl git build-essential libssl-dev libreadline-dev zlib1g-dev bison cmake unzip
 
 echo 'Install ruby2.6.4 with rbenv'
 export PATH=/root/.rbenv/bin:/root/.rbenv/shims:$PATH
@@ -31,6 +31,14 @@ cd ..
 rm -fr h2o-2.2.6
 echo 'DONE'
 
+echo 'Install alp'
+cd /tmp
+curl -sSL -O https://github.com/tkuchiki/alp/releases/download/v1.0.1/alp_linux_amd64.zip
+unzip alp_linux_amd64.zip
+rm alp_linux_amd64.zip
+install ./alp /usr/local/bin/
+echo 'DONE'
+
 echo 'Install redis'
 TAR_BALL=redis-stable.tar.gz
 cd /tmp
@@ -50,8 +58,10 @@ if [[ $TARGET = 'app' ]]; then
 fi
 
 echo 'Install mysql8.0'
+cd /tmp
 curl -sSL -O https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
-config_0.8.12-1_all.deb
 dpkg -i mysql-apt-config*
+rm mysql-apt-config*
 apt update
 apt install -y mysql-server
+echo 'DONE'
