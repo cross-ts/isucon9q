@@ -15,7 +15,6 @@ ISUCON9予選用開発リポジトリ
 │   ├── deploy
 │   └── install
 ├── db_server
-│   ├── app
 │   ├── db
 │   ├── h2o
 │   ├── redis
