@@ -11,13 +11,16 @@ apt update
 apt install -y curl git build-essential libssl-dev libreadline-dev zlib1g-dev bison cmake unzip
 
 echo 'Install ruby2.6.4 with rbenv'
+cd /tmp
 export PATH=/root/.rbenv/bin:/root/.rbenv/shims:$PATH
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
 rbenv install 2.6.4
 echo "export PATH=${HOME}/.rbenv/bin:${HOME}/.rbenv/versions/2.6.4/bin:\$PATH" >> ~/.bashrc
+rm ruby-build.*.log
 echo 'DONE'
 
 echo 'Install h2o'
+source ~/.bashrc
 cd /tmp
 TAR_BALL=v2.2.6.tar.gz
 curl -sSL -O https://github.com/h2o/h2o/archive/${TAR_BALL}
@@ -68,6 +71,7 @@ echo 'DONE'
 
 echo 'Install pt-query-digest'
 curl -sSL -O https://www.percona.com/downloads/percona-toolkit/3.0.13/binary/debian/bionic/x86_64/percona-toolkit_3.0.13-1.bionic_amd64.deb
-apt install libdbd-mysql-perl libdbi-perl libio-socket-ssl-perl libnet-ssleay-perl libterm-readkey-perl
+apt install -y libdbd-mysql-perl libdbi-perl libio-socket-ssl-perl libnet-ssleay-perl libterm-readkey-perl
 dpkg -i percona-toolkit_3.0.13-1.bionic_amd64.deb
+rm percona-toolkit_3.0.13-1.bionic_amd64.deb
 echo 'DONE'
