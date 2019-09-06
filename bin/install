@@ -8,7 +8,7 @@ fi
 
 echo 'Update apt'
 apt update
-apt install -y curl git build-essential libssl-dev libreadline-dev zlib1g-dev bison cmake unzip
+apt install -y curl git build-essential libssl-dev libreadline-dev zlib1g-dev bison cmake unzip dstat
 
 echo 'Install ruby2.6.4 with rbenv'
 cd /tmp
