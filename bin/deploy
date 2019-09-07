@@ -14,5 +14,5 @@ rsync -ar -e "ssh -i ~/.ssh/isucon9q.pem" ./app_server/app/Gemfile.lock root@${A
 rsync -ar -e "ssh -i ~/.ssh/isucon9q.pem" ./app_server/app/lib root@${APP2}:/home/isucon/isucari/webapp/ruby/
 rsync -ar -e "ssh -i ~/.ssh/isucon9q.pem" ./app_server/app/config.ru root@${APP2}:/home/isucon/isucari/webapp/ruby/
 
-ssh -i ~/.ssh/isucon9q.pem root:${APP1} "systemctl restart isucari.ruby.service"
-ssh -i ~/.ssh/isucon9q.pem root:${APP2} "systemctl restart isucari.ruby.service"
+ssh -i ~/.ssh/isucon9q.pem root@${APP1} "systemctl restart isucari.ruby.service"
+ssh -i ~/.ssh/isucon9q.pem root@${APP2} "systemctl restart isucari.ruby.service"
