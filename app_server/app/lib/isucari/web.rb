@@ -1,3 +1,4 @@
+require 'oj'
 require 'json'
 require 'securerandom'
 require 'sinatra/base'
@@ -132,7 +133,7 @@ module Isucari
       end
 
       def body_params
-        @body_params ||= JSON.parse(request.body.tap(&:rewind).read)
+        @body_params ||= OJ.load(request.body.tap(&:rewind).read, mode: :compat)
       end
 
       def halt_with_error(status = 500, error = 'unknown')
