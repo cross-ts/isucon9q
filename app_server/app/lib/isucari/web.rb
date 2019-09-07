@@ -331,8 +331,8 @@ module Isucari
       user_ids = (items.map{|i| i['seller_id']} + items.map{|i| i['buyer_id']}).compact
       users = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", user_ids)
       categories = db.query("SELECT * FROM `categories`")
-      transaction_evidences = db.xquery('SELECT * FROM `transaction_evidences` WHERE `item_id` in (?)', items.map{|i| i['id']}).first
-      shippings = db.xquery('SELECT * FROM `shippings` WHERE `transaction_evidence_id` in (?)', transaction_evidences.map{|t| t['id']}
+      transaction_evidences = db.xquery('SELECT * FROM `transaction_evidences` WHERE `item_id` in (?)', items.map{|i| i['id']})
+      shippings = db.xquery('SELECT * FROM `shippings` WHERE `transaction_evidence_id` in (?)', transaction_evidences.map{|t| t['id']})
 
       item_details = items.map do |item|
         seller = users.find{|u| u['id'] == item['seller_id']}
