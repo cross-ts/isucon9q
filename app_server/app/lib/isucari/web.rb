@@ -328,8 +328,14 @@ module Isucari
         end
       end
 
+      user_ids = (items.map{|i| i['seller_id']} + items.map{|i| i['buyer_id']}).compact
+      users = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", user_ids)
+      categories = db.query("SELECT * FROM `categories`")
+      transaction_evidences = db.xquery('SELECT * FROM `transaction_evidences` WHERE `item_id` in (?)', items.map{|i| i['id']}).first
+      shippings = db.xquery('SELECT * FROM `shippings` WHERE `transaction_evidence_id` in (?)', transaction_evidences.map{|t| t['id']}
+
       item_details = items.map do |item|
-        seller = get_user_simple_by_id(item['seller_id'])
+        seller = users.find{|u| u['id'] == item['seller_id']}
         if seller.nil?
           db.query('ROLLBACK')
           halt_with_error 404, 'seller not found'
@@ -344,7 +350,11 @@ module Isucari
         item_detail = {
           'id' => item['id'],
           'seller_id' => item['seller_id'],
-          'seller' => seller,
+          'seller' => {
+            'id' => seller['id'],
+            'account_name' => seller['account_name'],
+            'num_sell_items' => seller['num_sell_items']
+          }
           # buyer_id
           # buyer
           'status' => item['status'],
@@ -361,19 +371,23 @@ module Isucari
         }
 
         if item['buyer_id'] != 0
-          buyer = get_user_simple_by_id(item['buyer_id'])
+          buyer = users.find{|u| u['id'] == item['buyer_id']}
           if buyer.nil?
             db.query('ROLLBACK')
             halt_with_error 404, 'buyer not found'
           end
 
           item_detail['buyer_id'] = item['buyer_id']
-          item_detail['buyer'] = buyer
+          item_detail['buyer'] = {
+            'id' => buyer['id'],
+            'account_name' => buyer['account_name'],
+            'num_sell_items' => buyer['num_sell_items']
+          }
         end
 
-        transaction_evidence = db.xquery('SELECT * FROM `transaction_evidences` WHERE `item_id` = ?', item['id']).first
+        transaction_evidence = transaction_evidences.find{|t| t['item_id'] == item['id']}
         unless transaction_evidence.nil?
-          shipping = db.xquery('SELECT * FROM `shippings` WHERE `transaction_evidence_id` = ?', transaction_evidence['id']).first
+          shipping = shippings.find{|s| s['transaction_evidence_id'] == transaction_evidence['id']}
           if shipping.nil?
             db.query('ROLLBACK')
             halt_with_error 404, 'shipping not found'
