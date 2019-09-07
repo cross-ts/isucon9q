@@ -95,6 +95,23 @@ module Isucari
         }
       end
 
+      def get_categories_hash
+        categories = db.query("SELECT * FROM `categories`")
+        hash = {}
+        categories.each do |category|
+          parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id']} : nil
+          parent_category_name = parent_category ? parent_category['category_name'] : nil
+          hash[category['id']] = {
+            'id' => category['id'],
+            'parent_id' => category['parent_id'],
+            'category_name' => category['category_name'],
+            'parent_category_name' => parent_category_name
+          }
+        end
+
+        hash
+      end
+
       def get_category_by_id(category_id)
         category = db.xquery('SELECT * FROM `categories` WHERE `id` = ?', category_id).first
 
@@ -185,16 +202,14 @@ module Isucari
       end
 
       sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['seller_id']})
-      categories = db.query("SELECT * FROM `categories`")
+      categories = get_categories_hash
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
         halt_with_error 404, 'seller not found' if seller.nil?
 
-        category = categories.find{|c| c['id'] == item['category_id']}
+        category = categories[item['category_id']]
         halt_with_error 404, 'category not found' if category.nil?
-        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id'].to_i} : nil
-        parent_category_name = parent_category ? parent_category['category_name'] : nil
 
         {
           'id' => item['id'],
@@ -209,12 +224,7 @@ module Isucari
           'price' => item['price'],
           'image_url' => get_image_url(item['image_name']),
           'category_id' => item['category_id'],
-          'category' => {
-            'id' => category['id'],
-            'parent_id' => category['parent_id'],
-            'category_name' => category['category_name'],
-            'parent_category_name' => parent_category_name,
-          },
+          'category' => category,
           'created_at' => item['created_at'].to_i
         }
       end
@@ -253,16 +263,14 @@ module Isucari
       end
 
       sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['seller_id']})
-      categories = db.query("SELECT * FROM `categories`")
+      categories = get_categories_hash
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
         halt_with_error 404, 'seller not found' if seller.nil?
 
-        category = categories.find{|c| c['id'] == item['category_id']}
+        category = categories[item['category_id']]
         halt_with_error 404, 'category not found' if category.nil?
-        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id'].to_i} : nil
-        parent_category_name = parent_category ? parent_category['category_name'] : nil
 
         {
           'id' => item['id'],
@@ -277,12 +285,7 @@ module Isucari
           'price' => item['price'],
           'image_url' => get_image_url(item['image_name']),
           'category_id' => item['category_id'],
-          'category' => {
-            'id' => category['id'],
-            'parent_id' => category['parent_id'],
-            'category_name' => category['category_name'],
-            'parent_category_name' => parent_category_name,
-          },
+          'category' => category,
           'created_at' => item['created_at'].to_i
         }
       end
@@ -331,7 +334,7 @@ module Isucari
 
       user_ids = (items.map{|i| i['seller_id']} + items.map{|i| i['buyer_id']}).compact
       users = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", user_ids)
-      categories = db.query("SELECT * FROM `categories`")
+      categories = get_categories_hash
       transaction_evidences = db.xquery('SELECT * FROM `transaction_evidences` WHERE `item_id` in (?)', items.map{|i| i['id']})
       shippings = db.xquery('SELECT * FROM `shippings` WHERE `transaction_evidence_id` in (?)', transaction_evidences.map{|t| t['id']})
 
@@ -342,7 +345,7 @@ module Isucari
           halt_with_error 404, 'seller not found'
         end
 
-        category = get_category_by_id(item['category_id'])
+        category = category[item['category_id']]
         if category.nil?
           db.query('ROLLBACK')
           halt_with_error 404, 'category not found'
@@ -445,8 +448,10 @@ module Isucari
         db.xquery("SELECT * FROM `items` WHERE `seller_id` = ? AND `status` IN (?, ?, ?) ORDER BY `created_at` DESC, `id` DESC LIMIT #{ITEMS_PER_PAGE + 1}", user_simple['id'], ITEM_STATUS_ON_SALE, ITEM_STATUS_TRADING, ITEM_STATUS_SOLD_OUT)
       end
 
+      categories = get_categories_hash
+
       item_simples = items.map do |item|
-        category = get_category_by_id(item['category_id'])
+        category = categories[item['category_id']]
         halt_with_error 404, 'category not found' if category.nil?
 
         {
