@@ -179,8 +179,10 @@ module Isucari
         db.xquery("SELECT * FROM `items` WHERE `status` IN (?, ?) ORDER BY `created_at` DESC, `id` DESC LIMIT #{ITEMS_PER_PAGE + 1}", ITEM_STATUS_ON_SALE, ITEM_STATUS_SOLD_OUT)
       end
 
+      sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (#{items.map{|i| i['id']}.join(', ')})")
+
       item_simples = items.map do |item|
-        seller = get_user_simple_by_id(item['seller_id'])
+        seller = sellers.find{|s| item['seller_id'] == s['id']}
         halt_with_error 404, 'seller not found' if seller.nil?
 
         category = get_category_by_id(item['category_id'])
@@ -233,8 +235,10 @@ module Isucari
         db.xquery("SELECT * FROM `items` WHERE `status` IN (?,?) AND category_id IN (?) ORDER BY `created_at` DESC, `id` DESC LIMIT #{ITEMS_PER_PAGE + 1}", ITEM_STATUS_ON_SALE, ITEM_STATUS_SOLD_OUT, category_ids)
       end
 
+      sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (#{items.map{|i| i['id']}.join(', ')})")
+
       item_simples = items.map do |item|
-        seller = get_user_simple_by_id(item['seller_id'])
+        seller = sellers.find{|s| item['seller_id'] == s['id']}
         halt_with_error 404, 'seller not found' if seller.nil?
 
         category = get_category_by_id(item['category_id'])
