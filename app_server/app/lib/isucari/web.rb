@@ -133,7 +133,7 @@ module Isucari
       end
 
       def body_params
-        @body_params ||= OJ.load(request.body.tap(&:rewind).read)
+        @body_params ||= Oj.load(request.body.tap(&:rewind).read)
       end
 
       def halt_with_error(status = 500, error = 'unknown')
