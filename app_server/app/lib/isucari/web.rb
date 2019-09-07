@@ -743,7 +743,7 @@ module Isucari
       img_name = "#{Digest::SHA1.hexdigest(img)}#{ext}"
 
       File.open("/home/isucon/isucari/webapp/public/upload/#{img_name}", 'wb') do |f|
-        f.write upload['tempfile'].read
+        f.write img
       end
 
       db.query('BEGIN')
