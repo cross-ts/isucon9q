@@ -354,7 +354,7 @@ module Isucari
             'id' => seller['id'],
             'account_name' => seller['account_name'],
             'num_sell_items' => seller['num_sell_items']
-          }
+          },
           # buyer_id
           # buyer
           'status' => item['status'],
