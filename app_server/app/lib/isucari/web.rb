@@ -252,6 +252,7 @@ module Isucari
       end
 
       sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['seller_id']})
+      categories = db.query("SELECT * FROM `categories`")
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
