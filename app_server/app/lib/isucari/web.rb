@@ -345,7 +345,7 @@ module Isucari
           halt_with_error 404, 'seller not found'
         end
 
-        category = category[item['category_id']]
+        category = categories[item['category_id']]
         if category.nil?
           db.query('ROLLBACK')
           halt_with_error 404, 'category not found'
