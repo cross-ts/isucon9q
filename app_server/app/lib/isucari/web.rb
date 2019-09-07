@@ -46,6 +46,10 @@ module Isucari
       register Sinatra::Reloader
     end
 
+    configure do
+      enable :sessions
+    end
+
     set :add_charset, ['application/json']
     set :public_folder, File.join(__dir__, '..', '..', 'public')
     set :root, File.join(__dir__, '..', '..')
