@@ -724,21 +724,18 @@ module Isucari
 
       user = get_user
       halt_with_error 404, 'user not found' if user.nil?
-
       halt_with_error 500, 'image error' if upload['tempfile'].nil?
-      img = upload['tempfile'].read
 
-      ext = File.extname(upload['filename'])
+      img_name = upload['filename']
+      ext = File.extname(img_name)
       unless ['.jpg', '.jpeg', '.png', '.gif'].include?(ext)
         halt_with_error 400, 'unsupported image format error'
       end
 
       ext = '.jpg' if ext == '.jpeg'
 
-      img_name = "#{SecureRandom.hex(16)}#{ext}"
-
       File.open("/home/isucon/isucari/webapp/public/upload/#{img_name}", 'wb') do |f|
-        f.write img
+        f.write upload['tempfile'].read
       end
 
       db.query('BEGIN')
