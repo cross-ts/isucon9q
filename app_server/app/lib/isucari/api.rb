@@ -1,3 +1,4 @@
+require 'oj'
 require 'json'
 require 'uri'
 require 'net/http'
@@ -28,7 +29,7 @@ module Isucari
         raise Error, "status code #{res.code}; body #{res.body}"
       end
 
-      JSON.parse(res.body)
+      OJ.load(res.body)
     end
 
     def shipment_create(shipment_url, param)
@@ -48,7 +49,7 @@ module Isucari
         raise Error, "status code #{res.code}; body #{res.body}"
       end
 
-      JSON.parse(res.body)
+      OJ.load(res.body)
     end
 
     def shipment_request(shipment_url, param)
@@ -88,7 +89,7 @@ module Isucari
         raise Error, "status code #{res.code}; body #{res.body}"
       end
 
-      JSON.parse(res.body)
+      OJ.load(res.body)
     end
   end
 end
