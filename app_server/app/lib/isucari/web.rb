@@ -181,9 +181,11 @@ module Isucari
       end
 
       sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['seller_id']})
+      categories = db.query("SELECT * FROM `categories`")
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
+
         halt_with_error 404, 'seller not found' if seller.nil?
 
         category = get_category_by_id(item['category_id'])
@@ -192,7 +194,11 @@ module Isucari
         {
           'id' => item['id'],
           'seller_id' => item['seller_id'],
-          'seller' => seller,
+          'seller' => {
+            'id' => seller['id'],
+            'account_name' => seller['account_name'],
+            'num_sell_items' => seller['num_sell_items']
+          },
           'status' => item['status'],
           'name' => item['name'],
           'price' => item['price'],
@@ -248,7 +254,11 @@ module Isucari
         {
           'id' => item['id'],
           'seller_id' => item['seller_id'],
-          'seller' => seller,
+          'seller' => {
+            'id' => seller['id'],
+            'account_name' => seller['account_name'],
+            'num_sell_items' => seller['num_sell_items']
+          },
           'status' => item['status'],
           'name' => item['name'],
           'price' => item['price'],
@@ -1197,7 +1207,7 @@ module Isucari
     # getReports
     get '/reports.json' do
       transaction_evidences = db.xquery('SELECT * FROM `transaction_evidences` WHERE `id` > 15007')
-      
+
       response = transaction_evidences.map do |transaction_evidence|
         {
           'id' => transaction_evidence['id'],
