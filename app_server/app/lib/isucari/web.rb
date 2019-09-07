@@ -192,8 +192,8 @@ module Isucari
 
         category = categories.find{|c| c['id'] == item['category_id']}
         halt_with_error 404, 'category not found' if category.nil?
-        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id']} : nil
-        parent_category_name = parent_category ? parent_category['name'] : nil
+        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id'].to_i} : nil
+        parent_category_name = parent_category ? parent_category['category_name'] : nil
 
         {
           'id' => item['id'],
@@ -259,8 +259,8 @@ module Isucari
 
         category = categories.find{|c| c['id'] == item['category_id']}
         halt_with_error 404, 'category not found' if category.nil?
-        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id']} : nil
-        parent_category_name = parent_category ? parent_category['name'] : nil
+        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id'].to_i} : nil
+        parent_category_name = parent_category ? parent_category['category_name'] : nil
 
         {
           'id' => item['id'],
