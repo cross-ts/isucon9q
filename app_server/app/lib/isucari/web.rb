@@ -189,11 +189,12 @@ module Isucari
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
-
         halt_with_error 404, 'seller not found' if seller.nil?
 
-        category = get_category_by_id(item['category_id'])
+        category = categories.find{|c| c['id'] == item['category_id']}
         halt_with_error 404, 'category not found' if category.nil?
+        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id']} : nil
+        parent_category_name = parent_category ? parent_category['name'] : nil
 
         {
           'id' => item['id'],
@@ -208,7 +209,12 @@ module Isucari
           'price' => item['price'],
           'image_url' => get_image_url(item['image_name']),
           'category_id' => item['category_id'],
-          'category' => category,
+          'category' => {
+            'id' => category['id'],
+            'parent_id' => category['parent_id'],
+            'category_name' => category['category_name'],
+            'parent_category_name' => parent_category_name,
+          },
           'created_at' => item['created_at'].to_i
         }
       end
@@ -252,8 +258,10 @@ module Isucari
         seller = sellers.find{|s| item['seller_id'] == s['id']}
         halt_with_error 404, 'seller not found' if seller.nil?
 
-        category = get_category_by_id(item['category_id'])
+        category = categories.find{|c| c['id'] == item['category_id']}
         halt_with_error 404, 'category not found' if category.nil?
+        parent_category = category['parent_id'].to_i.positive? ? categories.find{|c| c['id'] == category['parent_id']} : nil
+        parent_category_name = parent_category ? parent_category['name'] : nil
 
         {
           'id' => item['id'],
@@ -268,7 +276,12 @@ module Isucari
           'price' => item['price'],
           'image_url' => get_image_url(item['image_name']),
           'category_id' => item['category_id'],
-          'category' => category,
+          'category' => {
+            'id' => category['id'],
+            'parent_id' => category['parent_id'],
+            'category_name' => category['category_name'],
+            'parent_category_name' => parent_category_name,
+          },
           'created_at' => item['created_at'].to_i
         }
       end
