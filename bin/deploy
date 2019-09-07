@@ -4,8 +4,6 @@ APP1=47.74.37.146
 APP2=47.74.34.238
 DB=47.74.2.187
 
-rsync ./app_server/app/* /tmp
-
 rsync -ar -e "ssh -i ~/.ssh/isucon9q.pem" ./app_server/app/Gemfile root@${APP1}:/home/isucon/isucari/webapp/ruby/
 rsync -ar -e "ssh -i ~/.ssh/isucon9q.pem" ./app_server/app/Gemfile.lock root@${APP1}:/home/isucon/isucari/webapp/ruby/
 rsync -ar -e "ssh -i ~/.ssh/isucon9q.pem" ./app_server/app/lib root@${APP1}:/home/isucon/isucari/webapp/ruby/
