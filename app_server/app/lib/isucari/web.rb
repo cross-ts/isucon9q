@@ -737,7 +737,7 @@ module Isucari
 
       img_name = "#{SecureRandom.hex(16)}#{ext}"
 
-      File.open("#{settings.root}/public/upload/#{img_name}", 'wb') do |f|
+      File.open("/home/isucon/isucari/webapp/public/upload/#{img_name}", 'wb') do |f|
         f.write img
       end
 
