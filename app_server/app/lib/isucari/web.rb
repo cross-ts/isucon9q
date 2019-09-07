@@ -179,7 +179,7 @@ module Isucari
         db.xquery("SELECT * FROM `items` WHERE `status` IN (?, ?) ORDER BY `created_at` DESC, `id` DESC LIMIT #{ITEMS_PER_PAGE + 1}", ITEM_STATUS_ON_SALE, ITEM_STATUS_SOLD_OUT)
       end
 
-      sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['id']})
+      sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['seller_id']})
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
@@ -235,7 +235,7 @@ module Isucari
         db.xquery("SELECT * FROM `items` WHERE `status` IN (?,?) AND category_id IN (?) ORDER BY `created_at` DESC, `id` DESC LIMIT #{ITEMS_PER_PAGE + 1}", ITEM_STATUS_ON_SALE, ITEM_STATUS_SOLD_OUT, category_ids)
       end
 
-      sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['id']})
+      sellers = db.xquery("SELECT * FROM `users` WHERE `id` in (?)", items.map{|i| i['seller_id']})
 
       item_simples = items.map do |item|
         seller = sellers.find{|s| item['seller_id'] == s['id']}
