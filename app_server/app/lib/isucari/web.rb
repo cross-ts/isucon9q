@@ -1,3 +1,4 @@
+require 'digest/sha1'
 require 'json'
 require 'securerandom'
 require 'sinatra/base'
@@ -726,13 +727,15 @@ module Isucari
       halt_with_error 404, 'user not found' if user.nil?
       halt_with_error 500, 'image error' if upload['tempfile'].nil?
 
-      img_name = upload['filename']
-      ext = File.extname(img_name)
+      ext = File.extname(upload['filename'])
       unless ['.jpg', '.jpeg', '.png', '.gif'].include?(ext)
         halt_with_error 400, 'unsupported image format error'
       end
 
       ext = '.jpg' if ext == '.jpeg'
+
+      img = upload['tempfile'].read
+      img_name = "#{Digest::SHA1.hexdigest(img)}#{ext}"
 
       File.open("/home/isucon/isucari/webapp/public/upload/#{img_name}", 'wb') do |f|
         f.write upload['tempfile'].read
